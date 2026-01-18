@@ -22,7 +22,7 @@ Traditionally, this process involves manual review of patient charts, consultati
 
 ## Primary Use Cases
 
-### For Healthcare Providers
+### For Healthcare Providers at the NorthBay Medical Center
 - **Anesthesiologists**: Quickly assess patients and generate standardized preoperative orders
 - **Surgeons**: Ensure appropriate preoperative workup before scheduling procedures
 - **Preoperative Clinic Staff**: Efficiently process patient assessments and coordinate care
@@ -126,24 +126,7 @@ The output is optimized for:
 - **PDF download**: High-quality PDF suitable for EMR integration
 - **Clinical documentation**: Professional formatting for medical records
 
-## Future Enhancements
 
-Potential areas for expansion:
-- Integration with Electronic Medical Records (EMR) systems
-- Patient portal integration for remote assessment
-- Advanced risk stratification algorithms
-- Multi-language support
-- Customizable order sets by institution
-- Analytics and reporting capabilities
 
-## License
-
-This application is designed for clinical use at NorthBay Health and affiliated healthcare facilities.
-
-## Support
-
-For technical support or clinical questions, please contact the development team or your institution's IT department.
-
----
 
 **Note**: This application is a clinical decision support tool. All recommendations should be reviewed by qualified healthcare providers and adjusted based on individual patient circumstances and institutional protocols.
