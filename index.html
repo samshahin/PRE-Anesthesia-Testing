@@ -6,6 +6,7 @@
     <title>Preoperative Assessment | NorthBay Health</title>
     <meta name="description" content="Comprehensive preoperative patient evaluation and order recommendations system">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="assets/css/styles.css">
     <script>
         tailwind.config = {
@@ -406,18 +407,47 @@
             </div>
         </form>
 
+        <!-- Hidden print content container -->
+        <div id="printContent" class="hidden"></div>
+
         <!-- Recommendations Results -->
         <div
             id="recommendations"
             class="mt-8 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hidden"
         >
             <div class="bg-gradient-to-r from-[#008045] to-[#6ba818] px-5 py-4">
-                <h3 class="flex items-center gap-3 text-white font-semibold text-lg">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Recommended Preoperative Orders
-                </h3>
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <h3 class="flex items-center gap-3 text-white font-semibold text-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Recommended Preoperative Orders
+                    </h3>
+                    <div class="flex items-center gap-2">
+                        <button
+                            type="button"
+                            onclick="downloadPDF()"
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#008045] font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#008045]"
+                            title="Download PDF"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Download PDF
+                        </button>
+                        <button
+                            type="button"
+                            onclick="printOrders()"
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#008045] font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#008045]"
+                            title="Print"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                            </svg>
+                            Print
+                        </button>
+                    </div>
+                </div>
             </div>
             <div id="recommendationsContent" class="p-5 sm:p-6 space-y-5">
             </div>

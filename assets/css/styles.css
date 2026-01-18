@@ -1,0 +1,133 @@
+/* Custom styles to complement Tailwind CSS */
+/* NorthBay Health brand colors and design system */
+
+:root {
+  /* NorthBay Health brand colors */
+  --nb-navy: oklch(0.22 0.06 260);
+  --nb-teal: oklch(0.58 0.14 220);
+  --nb-green: oklch(0.58 0.16 130);
+  --nb-green-light: oklch(0.72 0.18 125);
+  --nb-green-dark: oklch(0.42 0.12 155);
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Checkbox label styling when checked */
+.checkbox-label:has(input:checked) {
+  background-color: rgb(0 158 224 / 0.1);
+  border-color: #009ee0;
+}
+
+/* Print content container - hidden by default */
+#printContent {
+  display: none;
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 15px;
+  color: #1e293b;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Print styles */
+@media print {
+  /* Hide non-essential elements */
+  header,
+  footer,
+  button,
+  form,
+  #recommendations,
+  main > *:not(#printContent) {
+    display: none !important;
+  }
+  
+  /* Show only print content */
+  #printContent {
+    display: block !important;
+    position: static !important;
+    visibility: visible !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 10mm !important;
+  }
+  
+  /* Page setup */
+  @page {
+    margin: 10mm;
+    size: A4;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Optimize for printing */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  
+  /* Remove shadows and borders that don't print well */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  /* Ensure tables and lists print properly */
+  table {
+    border-collapse: collapse !important;
+  }
+  
+  ul, ol {
+    page-break-inside: avoid;
+  }
+  
+  /* Prevent breaking inside important elements */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  
+  /* Compact spacing for print */
+  div {
+    page-break-inside: avoid;
+  }
+}

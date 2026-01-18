@@ -1,0 +1,12 @@
+{
+  "name": "pre-anesthesia-testing",
+  "version": "1.0.0",
+  "description": "Preoperative Clinic Assessment System",
+  "scripts": {
+    "dev": "live-server --port=3000 --open=/index.html",
+    "start": "live-server --port=3000 --open=/index.html"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
