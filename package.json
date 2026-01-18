@@ -4,7 +4,8 @@
   "description": "Preoperative Clinic Assessment System",
   "scripts": {
     "dev": "live-server --port=3000 --open=/index.html",
-    "start": "live-server --port=3000 --open=/index.html"
+    "start": "live-server --port=3000 --open=/index.html",
+    "build": "echo 'No build step required for static site'"
   },
   "devDependencies": {
     "live-server": "^1.2.2"

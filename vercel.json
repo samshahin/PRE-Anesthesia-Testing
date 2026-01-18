@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "buildCommand": "echo 'Static site - no build required'",
+  "outputDirectory": ".",
+  "framework": null
+}
