@@ -46,7 +46,7 @@
         <form id="preopForm" class="space-y-6">
             <!-- Patient Information -->
             <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-shadow hover:shadow-md">
-                <div class="bg-gradient-to-r from-[#0e2657] to-[#1a3a7a] px-5 py-4">
+                <div class="px-5 py-4" style="background: linear-gradient(to right, #0e2657, #1a3a7a);">
                     <h2 class="flex items-center gap-3 text-white font-semibold text-lg">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -56,19 +56,6 @@
                 </div>
                 <div class="p-5 sm:p-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                        <div class="sm:col-span-2 lg:col-span-1">
-                            <label for="patientName" class="block text-sm font-medium text-slate-700 mb-1.5">
-                                Patient Name <span class="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="patientName"
-                                name="patientName"
-                                required
-                                class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400"
-                                placeholder="Enter patient name"
-                            />
-                        </div>
                         <div>
                             <label for="age" class="block text-sm font-medium text-slate-700 mb-1.5">
                                 Age <span class="text-red-500">*</span>
@@ -102,7 +89,7 @@
                         </div>
                         <div>
                             <label for="weight" class="block text-sm font-medium text-slate-700 mb-1.5">
-                                Weight (kg)
+                                Weight (lbs)
                             </label>
                             <input
                                 type="number"
@@ -110,20 +97,22 @@
                                 name="weight"
                                 step="0.1"
                                 class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400"
-                                placeholder="kg"
+                                placeholder="lbs"
                             />
                         </div>
                         <div>
                             <label for="height" class="block text-sm font-medium text-slate-700 mb-1.5">
-                                Height (cm)
+                                Height
                             </label>
                             <input
-                                type="number"
+                                type="text"
                                 id="height"
                                 name="height"
                                 class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400"
-                                placeholder="cm"
+                                placeholder="5'10&quot;"
                             />
+                            <p class="text-xs text-slate-500 mt-1">Example: 5'10&quot; or 70 inches</p>
+                            <p id="heightError" class="text-xs text-red-500 mt-1 hidden"></p>
                         </div>
                     </div>
                 </div>
@@ -131,7 +120,7 @@
 
             <!-- Planned Surgery -->
             <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-shadow hover:shadow-md">
-                <div class="bg-gradient-to-r from-[#0e2657] to-[#1a3a7a] px-5 py-4">
+                <div class="px-5 py-4" style="background: linear-gradient(to right, #0e2657, #1a3a7a);">
                     <h2 class="flex items-center gap-3 text-white font-semibold text-lg">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
@@ -198,7 +187,7 @@
 
             <!-- Medical History -->
             <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-shadow hover:shadow-md">
-                <div class="bg-gradient-to-r from-[#0e2657] to-[#1a3a7a] px-5 py-4">
+                <div class="px-5 py-4" style="background: linear-gradient(to right, #0e2657, #1a3a7a);">
                     <h2 class="flex items-center gap-3 text-white font-semibold text-lg">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
@@ -301,11 +290,141 @@
                         </label>
                     </div>
 
+                    <!-- Implantable Cardiac Device Section -->
+                    <div class="mt-6 pt-6 border-t border-slate-200">
+                        <label class="block text-sm font-medium text-slate-700 mb-3">
+                            Do you have an implantable cardiac device?
+                        </label>
+                        <div class="flex gap-6 mb-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="cardiacDevice"
+                                    id="cardiacDeviceYes"
+                                    value="yes"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">Yes</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="cardiacDevice"
+                                    id="cardiacDeviceNo"
+                                    value="no"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">No</span>
+                            </label>
+                        </div>
+
+                        <!-- Conditional Fields Container -->
+                        <div id="cardiacDeviceFields" class="hidden mt-4 space-y-4">
+                            <div>
+                                <label for="deviceType" class="block text-sm font-medium text-slate-700 mb-1.5">
+                                    Device Type
+                                </label>
+                                <select
+                                    id="deviceType"
+                                    name="deviceType"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400 cursor-pointer"
+                                >
+                                    <option value="">Select Device Type</option>
+                                    <option value="pacemaker">Pacemaker</option>
+                                    <option value="aicd">AICD</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div id="deviceTypeOtherContainer" class="hidden">
+                                <label for="deviceTypeOther" class="block text-sm font-medium text-slate-700 mb-1.5">
+                                    Please specify device type
+                                </label>
+                                <input
+                                    type="text"
+                                    id="deviceTypeOther"
+                                    name="deviceTypeOther"
+                                    placeholder="Enter device type..."
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400"
+                                />
+                            </div>
+                            <div>
+                                <label for="lastInterrogation" class="block text-sm font-medium text-slate-700 mb-1.5">
+                                    When was the device last interrogated?
+                                </label>
+                                <select
+                                    id="lastInterrogation"
+                                    name="lastInterrogation"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400 cursor-pointer"
+                                >
+                                    <option value="">Select Time Frame</option>
+                                    <option value="over_6_months">Over 6 months ago</option>
+                                    <option value="within_6_months">Within the past 6 months</option>
+                                    <option value="not_sure">Not sure/Unknown</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-3">
+                                    Have you seen a cardiologist in the past year?
+                                </label>
+                                <div class="flex gap-6">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="cardiologistVisit"
+                                            id="cardiologistVisitYes"
+                                            value="yes"
+                                            class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">Yes</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="cardiologistVisit"
+                                            id="cardiologistVisitNo"
+                                            value="no"
+                                            class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mt-6">
                         <div>
                             <label for="medications" class="block text-sm font-medium text-slate-700 mb-1.5">
                                 Current Medications
                             </label>
+                            
+                            <!-- Weight Loss Medication Question -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    Do you take weight loss medication? (Select all that apply)
+                                </label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            name="weightLossMed"
+                                            value="glp1"
+                                            class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">GLP-1 (e.g., Ozempic/Wegovy)</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            name="weightLossMed"
+                                            value="sglt2"
+                                            class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">SGLT2 (e.g., Jardiance/Farxiga)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
                             <textarea
                                 id="medications"
                                 name="medications"
@@ -332,7 +451,7 @@
 
             <!-- Functional Status -->
             <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-shadow hover:shadow-md">
-                <div class="bg-gradient-to-r from-[#0e2657] to-[#1a3a7a] px-5 py-4">
+                <div class="px-5 py-4" style="background: linear-gradient(to right, #0e2657, #1a3a7a);">
                     <h2 class="flex items-center gap-3 text-white font-semibold text-lg">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -342,20 +461,66 @@
                 </div>
                 <div class="p-5 sm:p-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                        <div>
-                            <label for="functionalCapacity" class="block text-sm font-medium text-slate-700 mb-1.5">
-                                Functional Capacity (METs)
+                        <div class="sm:col-span-2 lg:col-span-3">
+                            <label class="block text-sm font-medium text-slate-700 mb-2">
+                                Which of the following can you do without chest pain, shortness of breath, or needing to stop? (Select all that apply)
                             </label>
-                            <select
-                                id="functionalCapacity"
-                                name="functionalCapacity"
-                                class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400 cursor-pointer"
-                            >
-                                <option value="">Select Functional Capacity</option>
-                                <option value="poor">Poor (&lt;4 METs)</option>
-                                <option value="moderate">Moderate (4-10 METs)</option>
-                                <option value="excellent">Excellent (&gt;10 METs)</option>
-                            </select>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        name="functionalCapacity"
+                                        value="stairs_4"
+                                        class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                    />
+                                    <span class="text-sm text-slate-700">Climb two flights of stairs without stopping</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        name="functionalCapacity"
+                                        value="walk_4"
+                                        class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                    />
+                                    <span class="text-sm text-slate-700">Walk four blocks or more without stopping</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        name="functionalCapacity"
+                                        value="housework_8"
+                                        class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                    />
+                                    <span class="text-sm text-slate-700">Do heavy housework (vacuuming/moving furniture)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        name="functionalCapacity"
+                                        value="vigorous_10"
+                                        class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                    />
+                                    <span class="text-sm text-slate-700">Vigorous activity (run a short distance / competitive sports)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        name="functionalCapacity"
+                                        value="shortness_rest"
+                                        class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                    />
+                                    <span class="text-sm text-slate-700">I get short of breath at rest</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        name="functionalCapacity"
+                                        value="not_sure"
+                                        class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                    />
+                                    <span class="text-sm text-slate-700">I'm not sure</span>
+                                </label>
+                            </div>
                         </div>
                         <div>
                             <label for="smokingStatus" class="block text-sm font-medium text-slate-700 mb-1.5">
@@ -389,6 +554,54 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Substance Abuse Section -->
+                    <div class="mt-6 pt-6 border-t border-slate-200">
+                        <label class="block text-sm font-medium text-slate-700 mb-3">
+                            Substance Abuse (Amphetamines, Methamphetamines, Cocaine)?
+                        </label>
+                        <div class="flex gap-6 mb-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="substanceAbuse"
+                                    id="substanceAbuseYes"
+                                    value="yes"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">Yes</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="substanceAbuse"
+                                    id="substanceAbuseNo"
+                                    value="no"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">No</span>
+                            </label>
+                        </div>
+
+                        <!-- Conditional Fields Container -->
+                        <div id="substanceAbuseFields" class="hidden mt-4">
+                            <div>
+                                <label for="lastSubstanceUse" class="block text-sm font-medium text-slate-700 mb-1.5">
+                                    When was your last use?
+                                </label>
+                                <select
+                                    id="lastSubstanceUse"
+                                    name="lastSubstanceUse"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400 cursor-pointer"
+                                >
+                                    <option value="">Select Time Frame</option>
+                                    <option value="within_5_days">Within the last 5 days</option>
+                                    <option value="more_than_5_days">More than 5 days ago</option>
+                                    <option value="not_sure">Not sure</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -397,7 +610,10 @@
                 <button
                     type="button"
                     onclick="generateRecommendations()"
-                    class="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-[#6ba818] to-[#8bc34a] text-white font-semibold rounded-xl shadow-lg shadow-[#6ba818]/25 transition-all duration-200 hover:shadow-xl hover:shadow-[#6ba818]/30 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#6ba818] focus:ring-offset-2 active:translate-y-0"
+                    class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 active:translate-y-0"
+                    style="background: linear-gradient(to right, #6ba818, #8bc34a); box-shadow: 0 10px 15px -3px rgba(107, 168, 24, 0.25), 0 4px 6px -2px rgba(107, 168, 24, 0.25);"
+                    onmouseover="this.style.boxShadow='0 20px 25px -5px rgba(107, 168, 24, 0.3), 0 10px 10px -5px rgba(107, 168, 24, 0.3)'"
+                    onmouseout="this.style.boxShadow='0 10px 15px -3px rgba(107, 168, 24, 0.25), 0 4px 6px -2px rgba(107, 168, 24, 0.25)'"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -415,7 +631,7 @@
             id="recommendations"
             class="mt-8 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hidden"
         >
-            <div class="bg-gradient-to-r from-[#008045] to-[#6ba818] px-5 py-4">
+            <div class="px-5 py-4" style="background: linear-gradient(to right, #008045, #6ba818);">
                 <div class="flex items-center justify-between flex-wrap gap-4">
                     <h3 class="flex items-center gap-3 text-white font-semibold text-lg">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -479,6 +695,107 @@
                 }
             });
         });
+        
+        // Height input validation
+        const heightInput = document.getElementById('height');
+        const heightError = document.getElementById('heightError');
+        
+        if (heightInput && heightError) {
+            heightInput.addEventListener('blur', function() {
+                const validation = validateHeightInput(this.value);
+                if (!validation.valid) {
+                    heightError.textContent = validation.error;
+                    heightError.classList.remove('hidden');
+                    this.classList.add('border-red-500');
+                    this.classList.remove('border-slate-300');
+                } else {
+                    heightError.classList.add('hidden');
+                    this.classList.remove('border-red-500');
+                    this.classList.add('border-slate-300');
+                }
+            });
+            
+            heightInput.addEventListener('input', function() {
+                // Clear error on input
+                if (!heightError.classList.contains('hidden')) {
+                    const validation = validateHeightInput(this.value);
+                    if (validation.valid) {
+                        heightError.classList.add('hidden');
+                        this.classList.remove('border-red-500');
+                        this.classList.add('border-slate-300');
+                    }
+                }
+            });
+        }
+
+        // Cardiac device conditional logic
+        const cardiacDeviceYes = document.getElementById('cardiacDeviceYes');
+        const cardiacDeviceNo = document.getElementById('cardiacDeviceNo');
+        const cardiacDeviceFields = document.getElementById('cardiacDeviceFields');
+        const deviceType = document.getElementById('deviceType');
+        const deviceTypeOtherContainer = document.getElementById('deviceTypeOtherContainer');
+
+        function toggleCardiacDeviceFields() {
+            if (cardiacDeviceYes && cardiacDeviceNo && cardiacDeviceFields) {
+                if (cardiacDeviceYes.checked) {
+                    cardiacDeviceFields.classList.remove('hidden');
+                } else {
+                    cardiacDeviceFields.classList.add('hidden');
+                    // Clear all conditional field values when hidden
+                    if (deviceType) deviceType.value = '';
+                    const deviceTypeOther = document.getElementById('deviceTypeOther');
+                    if (deviceTypeOther) deviceTypeOther.value = '';
+                    const lastInterrogation = document.getElementById('lastInterrogation');
+                    if (lastInterrogation) lastInterrogation.value = '';
+                    const cardiologistVisitYes = document.getElementById('cardiologistVisitYes');
+                    const cardiologistVisitNo = document.getElementById('cardiologistVisitNo');
+                    if (cardiologistVisitYes) cardiologistVisitYes.checked = false;
+                    if (cardiologistVisitNo) cardiologistVisitNo.checked = false;
+                    if (deviceTypeOtherContainer) deviceTypeOtherContainer.classList.add('hidden');
+                }
+            }
+        }
+
+        if (cardiacDeviceYes && cardiacDeviceNo) {
+            cardiacDeviceYes.addEventListener('change', toggleCardiacDeviceFields);
+            cardiacDeviceNo.addEventListener('change', toggleCardiacDeviceFields);
+        }
+
+        // Show/hide "Other" text input based on device type selection
+        if (deviceType && deviceTypeOtherContainer) {
+            deviceType.addEventListener('change', function() {
+                if (this.value === 'other') {
+                    deviceTypeOtherContainer.classList.remove('hidden');
+                } else {
+                    deviceTypeOtherContainer.classList.add('hidden');
+                    const deviceTypeOther = document.getElementById('deviceTypeOther');
+                    if (deviceTypeOther) deviceTypeOther.value = '';
+                }
+            });
+        }
+
+        // Substance abuse conditional logic
+        const substanceAbuseYes = document.getElementById('substanceAbuseYes');
+        const substanceAbuseNo = document.getElementById('substanceAbuseNo');
+        const substanceAbuseFields = document.getElementById('substanceAbuseFields');
+
+        function toggleSubstanceAbuseFields() {
+            if (substanceAbuseYes && substanceAbuseNo && substanceAbuseFields) {
+                if (substanceAbuseYes.checked) {
+                    substanceAbuseFields.classList.remove('hidden');
+                } else {
+                    substanceAbuseFields.classList.add('hidden');
+                    // Clear the last use dropdown when hidden
+                    const lastSubstanceUse = document.getElementById('lastSubstanceUse');
+                    if (lastSubstanceUse) lastSubstanceUse.value = '';
+                }
+            }
+        }
+
+        if (substanceAbuseYes && substanceAbuseNo) {
+            substanceAbuseYes.addEventListener('change', toggleSubstanceAbuseFields);
+            substanceAbuseNo.addEventListener('change', toggleSubstanceAbuseFields);
+        }
     </script>
 </body>
 </html>
