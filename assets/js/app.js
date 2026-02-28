@@ -1,6 +1,7 @@
 function generateRecommendations() {
     // Get form data
     const age = parseInt(document.getElementById('age').value) || 0;
+    const gender = document.getElementById('gender').value;
     const surgery = document.getElementById('surgeryType').value;
     const anesthesia = document.getElementById('anesthesiaType').value;
     
@@ -11,27 +12,63 @@ function generateRecommendations() {
     const recs = [];
     
     // Laboratory Studies
-    const labTests = ['Complete Blood Count (CBC)'];
-    labTests.push('Basic Metabolic Panel (BMP)');
+    const labTests = [];
     
-    if (age >= 50 || conditions.includes('diabetes') || conditions.includes('kidney_disease')) {
+    // Check for anticoagulants
+    const anticoagulant = document.querySelector('input[name="anticoagulant"]:checked');
+    const isOnAnticoagulant = anticoagulant && anticoagulant.value === 'yes';
+    const anticoagulantTypes = Array.from(document.querySelectorAll('input[name="anticoagulantType"]:checked'))
+        .map(cb => cb.value);
+    const isOnCoumadin = anticoagulantTypes.includes('coumadin');
+    
+    // For neurological disease, anticoagulants, pulmonary disease, sleep apnea, vascular disease, obesity, diabetes, kidney disease, abdominal surgery, or peritoneal dialysis catheter, use CBC without differential; otherwise use standard CBC
+    if (conditions.includes('neurological_disease') || isOnAnticoagulant || conditions.includes('copd') || conditions.includes('sleep_apnea') || conditions.includes('vascular_disease') || conditions.includes('obesity') || conditions.includes('diabetes') || conditions.includes('kidney_disease') || surgery === 'abdominal' || surgery === 'peritoneal_dialysis') {
+        labTests.push('Complete Blood Count (CBC) without differential');
+    } else {
+        labTests.push('Complete Blood Count (CBC)');
+    }
+    
+    // BMP: standard for all except Peritoneal Dialysis Catheter (which gets special BMP)
+    if (surgery !== 'peritoneal_dialysis') {
+        labTests.push('Basic Metabolic Panel (BMP)');
+    }
+    
+    // CMP triggers: Advanced Cardiac Disease OR surgery types (neurological, abdominal, vascular, thoracic)
+    const surgeryTriggersCMP = ['neurological', 'abdominal', 'vascular', 'thoracic'];
+    if (conditions.includes('heart_disease') || surgeryTriggersCMP.includes(surgery)) {
         labTests.push('Comprehensive Metabolic Panel (CMP)');
     }
     
-    if (conditions.includes('bleeding_disorder') || surgery === 'cardiac' || surgery === 'neurological') {
+    // Peritoneal Dialysis Catheter: special BMP with DOS and lab values (replaces standard BMP)
+    if (surgery === 'peritoneal_dialysis') {
+        labTests.push('BMP (DOS, K+<5.6, HCO3>11)');
+    }
+    
+    // PT/PTT/INR for bleeding disorder, orthopedic/neurological/vascular/thoracic surgery, or Coumadin
+    const surgeryTriggersPTINR = ['orthopedic', 'neurological', 'vascular', 'thoracic'];
+    if (conditions.includes('bleeding_disorder') || surgeryTriggersPTINR.includes(surgery) || isOnCoumadin) {
         labTests.push('PT/PTT/INR');
     }
     
-    if (surgery === 'cardiac' || surgery === 'orthopedic' || surgery === 'abdominal') {
+    if (surgery === 'orthopedic' || surgery === 'vascular' || surgery === 'thoracic') {
         labTests.push('Type and Screen');
     }
     
-    if (conditions.includes('diabetes')) {
-        labTests.push('HbA1c');
+    if (surgery === 'orthopedic' || surgery === 'neurological') {
+        labTests.push('UA (Urinalysis)');
     }
+    
     
     if (conditions.includes('liver_disease')) {
         labTests.push('Liver Function Tests');
+    }
+    
+    if (conditions.includes('kidney_disease')) {
+        labTests.push('BMP (DOS)');
+    }
+    
+    if (gender === 'female') {
+        labTests.push('Pregnancy Test');
     }
     
     recs.push({ title: 'Laboratory Studies', items: labTests });
@@ -39,16 +76,56 @@ function generateRecommendations() {
     // Diagnostic Studies
     const diagnosticTests = [];
     
-    if (age >= 40 || conditions.includes('heart_disease') || conditions.includes('hypertension')) {
+    // Check for stimulant use within 5 years - triggers BMP and EKG
+    const substanceAbuse = document.querySelector('input[name="substanceAbuse"]:checked');
+    const stimulantUseWithin5Years = document.querySelector('input[name="stimulantUseWithin5Years"]:checked');
+    const hasStimulantUseWithin5Years = substanceAbuse && substanceAbuse.value === 'yes' && 
+                                        stimulantUseWithin5Years && stimulantUseWithin5Years.value === 'yes';
+    
+    // ECG logic:
+    // - Advanced Cardiac Disease (heart_disease): always triggers ECG
+    // - Neurological Disease: always triggers ECG
+    // - Pulmonary Disease (COPD): always triggers ECG
+    // - Sleep Apnea: always triggers ECG
+    // - Vascular Disease: always triggers ECG
+    // - Obesity (BMI >39): always triggers ECG
+    // - Diabetes: always triggers ECG
+    // - Kidney Disease: always triggers ECG
+    // - Stimulant Use within 5 years: always triggers ECG
+    // - General age >= 50: always triggers ECG
+    // - General Cardiac Disease (hypertension): triggers ECG if age > 48 (age >= 49)
+    // - Surgery types: neurological, abdominal, orthopedic, vascular, thoracic
+    const hasHypertension = conditions.includes('hypertension');
+    const hasHeartDisease = conditions.includes('heart_disease');
+    const hasNeurologicalDisease = conditions.includes('neurological_disease');
+    const hasPulmonaryDisease = conditions.includes('copd');
+    const hasSleepApnea = conditions.includes('sleep_apnea');
+    const hasVascularDisease = conditions.includes('vascular_disease');
+    const hasObesity = conditions.includes('obesity');
+    const hasDiabetes = conditions.includes('diabetes');
+    const hasKidneyDisease = conditions.includes('kidney_disease');
+    const surgeryTriggersECG = ['neurological', 'abdominal', 'orthopedic', 'vascular', 'thoracic'];
+    
+    // Peritoneal Dialysis Catheter: EKG
+    if (surgery === 'peritoneal_dialysis') {
+        diagnosticTests.push('ECG (Electrocardiogram)');
+    } else if (hasHeartDisease || 
+        hasNeurologicalDisease || 
+        hasPulmonaryDisease ||
+        hasSleepApnea ||
+        hasVascularDisease ||
+        hasObesity ||
+        hasDiabetes ||
+        hasKidneyDisease ||
+        hasStimulantUseWithin5Years ||
+        age >= 50 || 
+        (hasHypertension && age >= 49) ||
+        surgeryTriggersECG.includes(surgery)) {
         diagnosticTests.push('ECG (Electrocardiogram)');
     }
     
     if (conditions.includes('heart_disease') || surgery === 'cardiac') {
         diagnosticTests.push('Echocardiogram');
-    }
-    
-    if (conditions.includes('copd')) {
-        diagnosticTests.push('Pulmonary Function Tests');
     }
     
     if (diagnosticTests.length > 0) {
@@ -58,7 +135,15 @@ function generateRecommendations() {
     // Imaging Studies
     const imagingTests = [];
     
-    if (age >= 60 || conditions.includes('copd') || surgery === 'thoracic' || surgery === 'cardiac') {
+    // CXR logic: Advanced Cardiac Disease or Pulmonary Disease with SOB/DOE, Peritoneal Dialysis Catheter, thoracic/cardiac surgery
+    const sobDoe = document.querySelector('input[name="sobDoe"]:checked');
+    const hasSobDoe = sobDoe && sobDoe.value === 'yes';
+    const copdWithSobDoe = conditions.includes('copd') && hasSobDoe;
+    const heartDiseaseWithSobDoe = conditions.includes('heart_disease') && hasSobDoe;
+    
+    if (surgery === 'peritoneal_dialysis') {
+        imagingTests.push('Chest X-ray (DOS if sat<95% or O2 requirement)');
+    } else if (heartDiseaseWithSobDoe || copdWithSobDoe || surgery === 'thoracic' || surgery === 'cardiac') {
         imagingTests.push('Chest X-ray');
     }
     
@@ -82,13 +167,7 @@ function generateRecommendations() {
             consultations.push('Pulmonology Consultation');
         }
         
-        if (conditions.includes('kidney_disease')) {
-            consultations.push('Nephrology Consultation');
-        }
         
-        if (conditions.includes('diabetes') && age >= 65) {
-            consultations.push('Endocrinology Consultation (if poorly controlled)');
-        }
         
         if (consultations.length > 0) {
             recs.push({ title: 'Specialist Consultations', items: consultations });
@@ -102,11 +181,28 @@ function generateRecommendations() {
         'Continue beta-blockers and statins if prescribed',
     ];
     
-    if (conditions.includes('diabetes')) {
-        medications.push('Adjust diabetes medications per anesthesia protocol');
-    }
 
     recs.push({ title: 'Medication Management', items: medications });
+
+    // Functional Status (METs)
+    const metsResult = calculateMETs();
+    const functionalStatus = [];
+    
+    // Check if METs is unavailable (not sure or no selection)
+    const selectedOptions = Array.from(document.querySelectorAll('input[name="functionalCapacity"]:checked'))
+        .map(cb => cb.value);
+    const isUnavailable = selectedOptions.includes('not_sure') || selectedOptions.length === 0;
+    
+    if (isUnavailable) {
+        functionalStatus.push('METs: Unavailable');
+    } else {
+        functionalStatus.push(`Functional Capacity: ${metsResult.display}`);
+        if (metsResult.mets !== null && metsResult.mets !== 0) {
+            functionalStatus.push(`METs Score: ${metsResult.mets}`);
+        }
+    }
+    
+    recs.push({ title: 'Functional Status', items: functionalStatus });
 
     // Required Actions / Warnings for Cardiac Devices
     const requiredActions = [];
@@ -116,24 +212,16 @@ function generateRecommendations() {
         .map(cb => cb.value);
     
     if (weightLossMeds.includes('glp1')) {
-        requiredActions.push('Stop GLP-1 medication 7 days before surgery.');
+        requiredActions.push('Stop taking the GLP-1 medication(s) 7 days before surgery.');
     }
     
     if (weightLossMeds.includes('sglt2')) {
-        requiredActions.push('Stop SGLT2 medication 3 days before surgery.');
+        requiredActions.push('Stop taking the SGLT2 medication(s) 3 days before surgery.');
     }
     
-    // Check for substance abuse
-    const substanceAbuse = document.querySelector('input[name="substanceAbuse"]:checked');
-    if (substanceAbuse && substanceAbuse.value === 'yes') {
-        const lastSubstanceUse = document.getElementById('lastSubstanceUse');
-        const lastSubstanceUseValue = lastSubstanceUse ? lastSubstanceUse.value : '';
-        
-        // Add action if within last 5 days or not sure
-        if (lastSubstanceUseValue === 'within_5_days' || lastSubstanceUseValue === 'not_sure') {
-            requiredActions.push('Must abstain from stimulant substance use for at least 5 days prior to surgery.');
-        }
-        // If "More than 5 days ago" or no selection, no action is added
+    // Check for stimulant use within 5 years
+    if (hasStimulantUseWithin5Years) {
+        requiredActions.push('Must abstain from stimulant substance use for at least 5 days prior to surgery.');
     }
     
     // Check for implantable cardiac device

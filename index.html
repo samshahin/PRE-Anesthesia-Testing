@@ -151,6 +151,7 @@
                                 <option value="ent">ENT Surgery</option>
                                 <option value="plastic">Plastic Surgery</option>
                                 <option value="vascular">Vascular Surgery</option>
+                                <option value="peritoneal_dialysis">Peritoneal Dialysis Catheter</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
@@ -205,7 +206,7 @@
                                 value="hypertension"
                                 class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
                             />
-                            <span class="text-sm text-slate-700">Hypertension</span>
+                            <span class="text-sm text-slate-700">General Cardiac Disease (Hypertension, Stable arrhythmia)</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
                             <input
@@ -214,7 +215,7 @@
                                 value="diabetes"
                                 class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
                             />
-                            <span class="text-sm text-slate-700">Diabetes Mellitus</span>
+                            <span class="text-sm text-slate-700">Diabetes</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
                             <input
@@ -223,7 +224,7 @@
                                 value="heart_disease"
                                 class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
                             />
-                            <span class="text-sm text-slate-700">Heart Disease</span>
+                            <span class="text-sm text-slate-700">Advanced Cardiac Disease (Angina, CM, CHF, Pulm HTN, MI <6 months, CAD, CABG, Angioplasty, Pacemaker/AICD, Severe Valve Disease)</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
                             <input
@@ -232,7 +233,7 @@
                                 value="copd"
                                 class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
                             />
-                            <span class="text-sm text-slate-700">COPD/Asthma</span>
+                            <span class="text-sm text-slate-700">Pulmonary Disease (COPD/Asthma)</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
                             <input
@@ -250,7 +251,7 @@
                                 value="liver_disease"
                                 class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
                             />
-                            <span class="text-sm text-slate-700">Liver Disease</span>
+                            <span class="text-sm text-slate-700">Liver Disease (Liver failure, Hep C, Cirrhosis)</span>
                         </label>
                         <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
                             <input
@@ -288,6 +289,71 @@
                             />
                             <span class="text-sm text-slate-700">Previous Anesthesia Complications</span>
                         </label>
+                        <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                            <input
+                                type="checkbox"
+                                name="conditions"
+                                value="neurological_disease"
+                                class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                            />
+                            <span class="text-sm text-slate-700">Neurological Disease (Seizure Disorder, CVA, TIA)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                            <input
+                                type="checkbox"
+                                name="conditions"
+                                value="sleep_apnea"
+                                class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                            />
+                            <span class="text-sm text-slate-700">Sleep Apnea</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                            <input
+                                type="checkbox"
+                                name="conditions"
+                                value="vascular_disease"
+                                class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                            />
+                            <span class="text-sm text-slate-700">Vascular Disease</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                            <input
+                                type="checkbox"
+                                name="conditions"
+                                value="obesity"
+                                class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                            />
+                            <span class="text-sm text-slate-700">Obesity: BMI >39</span>
+                        </label>
+                    </div>
+
+                    <!-- SOB/DOE Question (for Pulmonary Disease or Advanced Cardiac Disease) -->
+                    <div id="pulmonaryDiseaseFields" class="hidden mt-4 pt-4 border-t border-slate-200">
+                        <label class="block text-sm font-medium text-slate-700 mb-3">
+                            Do you experience shortness of breath (SOB) or dyspnea on exertion (DOE)?
+                        </label>
+                        <div class="flex gap-6">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="sobDoe"
+                                    id="sobDoeYes"
+                                    value="yes"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">Yes</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="sobDoe"
+                                    id="sobDoeNo"
+                                    value="no"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">No</span>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- Implantable Cardiac Device Section -->
@@ -411,7 +477,7 @@
                                             value="glp1"
                                             class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span class="text-sm text-slate-700">GLP-1 (e.g., Ozempic/Wegovy)</span>
+                                        <span class="text-sm text-slate-700">GLP-1 (e.g., Ozempic, Wegovy, Mounjaro, Trulicity, Rybelsus, Victoza, Byetta, Bydureon, Zepbound)</span>
                                     </label>
                                     <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
                                         <input
@@ -420,8 +486,64 @@
                                             value="sglt2"
                                             class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span class="text-sm text-slate-700">SGLT2 (e.g., Jardiance/Farxiga)</span>
+                                        <span class="text-sm text-slate-700">SGLT2 (e.g., Jardiance, Farxiga, Invokana, Brenzavvy, Steglatro, Inpefa)</span>
                                     </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Anticoagulants / Blood Thinners Question -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    Do you take anticoagulants / blood thinners?
+                                </label>
+                                <div class="flex gap-6 mb-3">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="anticoagulant"
+                                            id="anticoagulantYes"
+                                            value="yes"
+                                            class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">Yes</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="anticoagulant"
+                                            id="anticoagulantNo"
+                                            value="no"
+                                            class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">No</span>
+                                    </label>
+                                </div>
+                                
+                                <!-- Conditional Fields Container -->
+                                <div id="anticoagulantFields" class="hidden">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        Which medication? (Select all that apply)
+                                    </label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                            <input
+                                                type="checkbox"
+                                                name="anticoagulantType"
+                                                value="coumadin"
+                                                class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                            />
+                                            <span class="text-sm text-slate-700">Coumadin (Warfarin)</span>
+                                        </label>
+                                        <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                                            <input
+                                                type="checkbox"
+                                                name="anticoagulantType"
+                                                value="other"
+                                                class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                            />
+                                            <span class="text-sm text-slate-700">Other</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -555,10 +677,10 @@
                         </div>
                     </div>
 
-                    <!-- Substance Abuse Section -->
+                    <!-- Stimulant Use Section -->
                     <div class="mt-6 pt-6 border-t border-slate-200">
                         <label class="block text-sm font-medium text-slate-700 mb-3">
-                            Substance Abuse (Amphetamines, Methamphetamines, Cocaine)?
+                            Stimulant Use (Cocaine, Amphetamines, Methamphetamines)?
                         </label>
                         <div class="flex gap-6 mb-4">
                             <label class="flex items-center gap-2 cursor-pointer">
@@ -585,20 +707,30 @@
 
                         <!-- Conditional Fields Container -->
                         <div id="substanceAbuseFields" class="hidden mt-4">
-                            <div>
-                                <label for="lastSubstanceUse" class="block text-sm font-medium text-slate-700 mb-1.5">
-                                    When was your last use?
+                            <label class="block text-sm font-medium text-slate-700 mb-3">
+                                Was this use within the last 5 years (including current use)?
+                            </label>
+                            <div class="flex gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="stimulantUseWithin5Years"
+                                        id="stimulantUseWithin5YearsYes"
+                                        value="yes"
+                                        class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                    />
+                                    <span class="text-sm text-slate-700">Yes</span>
                                 </label>
-                                <select
-                                    id="lastSubstanceUse"
-                                    name="lastSubstanceUse"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400 cursor-pointer"
-                                >
-                                    <option value="">Select Time Frame</option>
-                                    <option value="within_5_days">Within the last 5 days</option>
-                                    <option value="more_than_5_days">More than 5 days ago</option>
-                                    <option value="not_sure">Not sure</option>
-                                </select>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="stimulantUseWithin5Years"
+                                        id="stimulantUseWithin5YearsNo"
+                                        value="no"
+                                        class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                    />
+                                    <span class="text-sm text-slate-700">No</span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -785,9 +917,11 @@
                     substanceAbuseFields.classList.remove('hidden');
                 } else {
                     substanceAbuseFields.classList.add('hidden');
-                    // Clear the last use dropdown when hidden
-                    const lastSubstanceUse = document.getElementById('lastSubstanceUse');
-                    if (lastSubstanceUse) lastSubstanceUse.value = '';
+                    // Clear the stimulant use within 5 years selection when hidden
+                    const stimulantUseWithin5YearsYes = document.getElementById('stimulantUseWithin5YearsYes');
+                    const stimulantUseWithin5YearsNo = document.getElementById('stimulantUseWithin5YearsNo');
+                    if (stimulantUseWithin5YearsYes) stimulantUseWithin5YearsYes.checked = false;
+                    if (stimulantUseWithin5YearsNo) stimulantUseWithin5YearsNo.checked = false;
                 }
             }
         }
@@ -796,6 +930,62 @@
             substanceAbuseYes.addEventListener('change', toggleSubstanceAbuseFields);
             substanceAbuseNo.addEventListener('change', toggleSubstanceAbuseFields);
         }
+
+        // Anticoagulant conditional logic
+        const anticoagulantYes = document.getElementById('anticoagulantYes');
+        const anticoagulantNo = document.getElementById('anticoagulantNo');
+        const anticoagulantFields = document.getElementById('anticoagulantFields');
+
+        function toggleAnticoagulantFields() {
+            if (anticoagulantYes && anticoagulantNo && anticoagulantFields) {
+                if (anticoagulantYes.checked) {
+                    anticoagulantFields.classList.remove('hidden');
+                } else {
+                    anticoagulantFields.classList.add('hidden');
+                    // Clear all anticoagulant type checkboxes when hidden
+                    document.querySelectorAll('input[name="anticoagulantType"]').forEach(cb => cb.checked = false);
+                }
+            }
+        }
+
+        if (anticoagulantYes && anticoagulantNo) {
+            anticoagulantYes.addEventListener('change', toggleAnticoagulantFields);
+            anticoagulantNo.addEventListener('change', toggleAnticoagulantFields);
+        }
+
+        // SOB/DOE Question (for Pulmonary Disease or Advanced Cardiac Disease)
+        const pulmonaryDiseaseCheckbox = document.querySelector('input[name="conditions"][value="copd"]');
+        const advancedCardiacDiseaseCheckbox = document.querySelector('input[name="conditions"][value="heart_disease"]');
+        const pulmonaryDiseaseFields = document.getElementById('pulmonaryDiseaseFields');
+
+        function toggleSobDoeFields() {
+            if (pulmonaryDiseaseFields) {
+                const showFields = (pulmonaryDiseaseCheckbox && pulmonaryDiseaseCheckbox.checked) || 
+                                 (advancedCardiacDiseaseCheckbox && advancedCardiacDiseaseCheckbox.checked);
+                
+                if (showFields) {
+                    pulmonaryDiseaseFields.classList.remove('hidden');
+                } else {
+                    pulmonaryDiseaseFields.classList.add('hidden');
+                    // Clear SOB/DOE selection when hidden
+                    const sobDoeYes = document.getElementById('sobDoeYes');
+                    const sobDoeNo = document.getElementById('sobDoeNo');
+                    if (sobDoeYes) sobDoeYes.checked = false;
+                    if (sobDoeNo) sobDoeNo.checked = false;
+                }
+            }
+        }
+
+        if (pulmonaryDiseaseCheckbox) {
+            pulmonaryDiseaseCheckbox.addEventListener('change', toggleSobDoeFields);
+        }
+        
+        if (advancedCardiacDiseaseCheckbox) {
+            advancedCardiacDiseaseCheckbox.addEventListener('change', toggleSobDoeFields);
+        }
+        
+        // Check initial state on page load
+        toggleSobDoeFields();
     </script>
 </body>
 </html>
