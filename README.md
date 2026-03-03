@@ -124,7 +124,7 @@ The application generates a professional, formatted document that includes:
 - **Footer**: Generation date and copyright information
 
 The output is optimized for:
-- **Single-page printing**: All content fits on one standard page
+- **Single-page printing**: All content fits on two standard pages
 - **PDF download**: High-quality PDF suitable for EMR integration
 - **Clinical documentation**: Professional formatting for medical records
 
