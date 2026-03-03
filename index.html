@@ -144,7 +144,8 @@
                                 <option value="cardiac">Cardiac Surgery</option>
                                 <option value="orthopedic">Orthopedic Surgery</option>
                                 <option value="abdominal">Abdominal Surgery</option>
-                                <option value="neurological">Neurological Surgery</option>
+                                <option value="major_spine">Major Spine Surgery</option>
+                                <option value="craniotomy">Craniotomy</option>
                                 <option value="thoracic">Thoracic Surgery</option>
                                 <option value="urological">Urological Surgery</option>
                                 <option value="gynecological">Gynecological Surgery</option>
@@ -325,6 +326,44 @@
                             />
                             <span class="text-sm text-slate-700">Obesity: BMI >39</span>
                         </label>
+                        <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer transition-all duration-200 hover:bg-[#009ee0]/5 hover:border-[#009ee0]/30 checkbox-label">
+                            <input
+                                type="checkbox"
+                                name="conditions"
+                                value="anemia"
+                                class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                            />
+                            <span class="text-sm text-slate-700">Anemia</span>
+                        </label>
+                    </div>
+
+                    <!-- Hct <28 Question (for Anemia) -->
+                    <div id="anemiaFields" class="hidden mt-4 pt-4 border-t border-slate-200">
+                        <label class="block text-sm font-medium text-slate-700 mb-3">
+                            Is Hct <28?
+                        </label>
+                        <div class="flex gap-6">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="hctLow"
+                                    id="hctLowYes"
+                                    value="yes"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">Yes</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="hctLow"
+                                    id="hctLowNo"
+                                    value="no"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">No</span>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- SOB/DOE Question (for Pulmonary Disease or Advanced Cardiac Disease) -->
@@ -348,6 +387,35 @@
                                     type="radio"
                                     name="sobDoe"
                                     id="sobDoeNo"
+                                    value="no"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Chemotherapy Question -->
+                    <div class="mt-6 pt-6 border-t border-slate-200">
+                        <label class="block text-sm font-medium text-slate-700 mb-3">
+                            Are you currently receiving chemotherapy?
+                        </label>
+                        <div class="flex gap-6">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="chemotherapy"
+                                    id="chemotherapyYes"
+                                    value="yes"
+                                    class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                />
+                                <span class="text-sm text-slate-700">Yes</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="chemotherapy"
+                                    id="chemotherapyNo"
                                     value="no"
                                     class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
                                 />
@@ -460,10 +528,6 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mt-6">
                         <div>
-                            <label for="medications" class="block text-sm font-medium text-slate-700 mb-1.5">
-                                Current Medications
-                            </label>
-                            
                             <!-- Weight Loss Medication Question -->
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-slate-700 mb-2">
@@ -487,6 +551,64 @@
                                             class="w-4 h-4 rounded border-slate-300 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
                                         />
                                         <span class="text-sm text-slate-700">SGLT2 (e.g., Jardiance, Farxiga, Invokana, Brenzavvy, Steglatro, Inpefa)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Diuretics, Digoxin, ACEi, ARB Question -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    Do you take any of the following medications? Diuretics, Digoxin, ACEi, ARB
+                                </label>
+                                <div class="flex gap-6">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="diureticsDigoxinAceiArb"
+                                            id="diureticsDigoxinAceiArbYes"
+                                            value="yes"
+                                            class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">Yes</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="diureticsDigoxinAceiArb"
+                                            id="diureticsDigoxinAceiArbNo"
+                                            value="no"
+                                            class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Steroid Medications Question -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    Do you take steroid medications on a regular or long-term basis?
+                                </label>
+                                <div class="flex gap-6">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="steroidMedications"
+                                            id="steroidMedicationsYes"
+                                            value="yes"
+                                            class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">Yes</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="steroidMedications"
+                                            id="steroidMedicationsNo"
+                                            value="no"
+                                            class="w-4 h-4 text-[#009ee0] focus:ring-[#009ee0] focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span class="text-sm text-slate-700">No</span>
                                     </label>
                                 </div>
                             </div>
@@ -546,26 +668,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            <textarea
-                                id="medications"
-                                name="medications"
-                                rows="4"
-                                placeholder="List all current medications..."
-                                class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400 resize-y"
-                            ></textarea>
-                        </div>
-                        <div>
-                            <label for="allergies" class="block text-sm font-medium text-slate-700 mb-1.5">
-                                Allergies
-                            </label>
-                            <textarea
-                                id="allergies"
-                                name="allergies"
-                                rows="4"
-                                placeholder="List all known allergies..."
-                                class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009ee0]/30 focus:border-[#009ee0] focus:bg-white hover:border-slate-400 resize-y"
-                            ></textarea>
                         </div>
                     </div>
                 </div>
@@ -986,6 +1088,30 @@
         
         // Check initial state on page load
         toggleSobDoeFields();
+        
+        // Anemia conditional logic
+        const anemiaCheckbox = document.querySelector('input[name="conditions"][value="anemia"]');
+        const anemiaFields = document.getElementById('anemiaFields');
+        
+        function toggleAnemiaFields() {
+            if (anemiaFields) {
+                if (anemiaCheckbox && anemiaCheckbox.checked) {
+                    anemiaFields.classList.remove('hidden');
+                } else {
+                    anemiaFields.classList.add('hidden');
+                    const hctLowYes = document.getElementById('hctLowYes');
+                    const hctLowNo = document.getElementById('hctLowNo');
+                    if (hctLowYes) hctLowYes.checked = false;
+                    if (hctLowNo) hctLowNo.checked = false;
+                }
+            }
+        }
+        
+        if (anemiaCheckbox) {
+            anemiaCheckbox.addEventListener('change', toggleAnemiaFields);
+        }
+        
+        toggleAnemiaFields();
     </script>
 </body>
 </html>

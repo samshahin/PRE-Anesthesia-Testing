@@ -21,21 +21,79 @@ function generateRecommendations() {
         .map(cb => cb.value);
     const isOnCoumadin = anticoagulantTypes.includes('coumadin');
     
-    // For neurological disease, anticoagulants, pulmonary disease, sleep apnea, vascular disease, obesity, diabetes, kidney disease, abdominal surgery, or peritoneal dialysis catheter, use CBC without differential; otherwise use standard CBC
-    if (conditions.includes('neurological_disease') || isOnAnticoagulant || conditions.includes('copd') || conditions.includes('sleep_apnea') || conditions.includes('vascular_disease') || conditions.includes('obesity') || conditions.includes('diabetes') || conditions.includes('kidney_disease') || surgery === 'abdominal' || surgery === 'peritoneal_dialysis') {
+    // Check for chemotherapy
+    const chemotherapy = document.querySelector('input[name="chemotherapy"]:checked');
+    const isOnChemotherapy = chemotherapy && chemotherapy.value === 'yes';
+    
+    // Check for stimulant use within 5 years
+    const substanceAbuse = document.querySelector('input[name="substanceAbuse"]:checked');
+    const stimulantUseWithin5Years = document.querySelector('input[name="stimulantUseWithin5Years"]:checked');
+    const hasStimulantUseWithin5Years = substanceAbuse && substanceAbuse.value === 'yes' && 
+                                        stimulantUseWithin5Years && stimulantUseWithin5Years.value === 'yes';
+    
+    // For age >= 50, neurological disease, anticoagulants, bleeding disorder, general cardiac disease (hypertension), advanced cardiac disease (heart_disease), pulmonary disease, sleep apnea, vascular disease, obesity, diabetes, kidney disease, liver disease, anemia, chemotherapy, or specific surgery types (craniotomy, abdominal, orthopedic, major spine, thoracic, peritoneal dialysis catheter), use CBC without differential; otherwise use standard CBC
+    const surgeryTriggersCBCNoDiff = ['craniotomy', 'abdominal', 'orthopedic', 'major_spine', 'thoracic', 'peritoneal_dialysis'];
+    if (age >= 50 || 
+        conditions.includes('neurological_disease') || 
+        isOnAnticoagulant || 
+        conditions.includes('bleeding_disorder') || 
+        conditions.includes('hypertension') || 
+        conditions.includes('heart_disease') || 
+        conditions.includes('copd') || 
+        conditions.includes('sleep_apnea') || 
+        conditions.includes('vascular_disease') || 
+        conditions.includes('obesity') || 
+        conditions.includes('diabetes') || 
+        conditions.includes('kidney_disease') || 
+        conditions.includes('liver_disease') || 
+        conditions.includes('anemia') || 
+        surgeryTriggersCBCNoDiff.includes(surgery) || 
+        isOnChemotherapy) {
         labTests.push('Complete Blood Count (CBC) without differential');
     } else {
         labTests.push('Complete Blood Count (CBC)');
     }
     
-    // BMP: standard for all except Peritoneal Dialysis Catheter (which gets special BMP)
-    if (surgery !== 'peritoneal_dialysis') {
+    // Check if CMP will be triggered (to avoid adding BMP if CMP is present)
+    const cardiacDeviceForCMP = document.querySelector('input[name="cardiacDevice"]:checked');
+    const hasCardiacDevice = cardiacDeviceForCMP && cardiacDeviceForCMP.value === 'yes';
+    const deviceTypeSelect = document.getElementById('deviceType');
+    const hasPacemakerOrAICD = hasCardiacDevice && deviceTypeSelect && (deviceTypeSelect.value === 'pacemaker' || deviceTypeSelect.value === 'aicd');
+    const surgeryTriggersCMP = ['major_spine', 'craniotomy', 'abdominal', 'vascular', 'thoracic'];
+    const willTriggerCMP = conditions.includes('heart_disease') || hasPacemakerOrAICD || surgeryTriggersCMP.includes(surgery);
+    
+    // BMP triggers: General cardiac disease, cocaine/meth use, current chemotherapy, diabetes, liver disease, neurological disease, obesity, kidney disease, steroid use, vascular disease, orthopedic surgery, or Diuretics/Digoxin/ACEi/ARB medications
+    // Note: Do not add BMP if CMP is already triggered (CMP includes all BMP tests plus additional ones)
+    const diureticsDigoxinAceiArb = document.querySelector('input[name="diureticsDigoxinAceiArb"]:checked');
+    const takesDiureticsDigoxinAceiArb = diureticsDigoxinAceiArb && diureticsDigoxinAceiArb.value === 'yes';
+    
+    const steroidMedications = document.querySelector('input[name="steroidMedications"]:checked');
+    const takesSteroidMedications = steroidMedications && steroidMedications.value === 'yes';
+    
+    // Peritoneal Dialysis Catheter gets special BMP, not regular BMP
+    if (surgery === 'peritoneal_dialysis') {
+        // Special BMP handled below
+    } else if (!willTriggerCMP && (conditions.includes('hypertension') || 
+               hasStimulantUseWithin5Years ||
+               isOnChemotherapy ||
+               conditions.includes('diabetes') ||
+               conditions.includes('liver_disease') ||
+               conditions.includes('neurological_disease') ||
+               conditions.includes('obesity') ||
+               takesSteroidMedications ||
+               conditions.includes('vascular_disease') ||
+               surgery === 'orthopedic' ||
+               takesDiureticsDigoxinAceiArb)) {
         labTests.push('Basic Metabolic Panel (BMP)');
     }
     
-    // CMP triggers: Advanced Cardiac Disease OR surgery types (neurological, abdominal, vascular, thoracic)
-    const surgeryTriggersCMP = ['neurological', 'abdominal', 'vascular', 'thoracic'];
-    if (conditions.includes('heart_disease') || surgeryTriggersCMP.includes(surgery)) {
+    // Kidney disease triggers BMP (DOS) - separate from regular BMP (still shown even if CMP is triggered)
+    if (conditions.includes('kidney_disease')) {
+        labTests.push('BMP (DOS)');
+    }
+    
+    // CMP triggers: Advanced Cardiac Disease, Pacemaker/AICD, OR surgery types (major spine, craniotomy, abdominal, vascular, thoracic)
+    if (willTriggerCMP) {
         labTests.push('Comprehensive Metabolic Panel (CMP)');
     }
     
@@ -44,17 +102,23 @@ function generateRecommendations() {
         labTests.push('BMP (DOS, K+<5.6, HCO3>11)');
     }
     
-    // PT/PTT/INR for bleeding disorder, orthopedic/neurological/vascular/thoracic surgery, or Coumadin
-    const surgeryTriggersPTINR = ['orthopedic', 'neurological', 'vascular', 'thoracic'];
-    if (conditions.includes('bleeding_disorder') || surgeryTriggersPTINR.includes(surgery) || isOnCoumadin) {
+    // PT/PTT/INR for bleeding disorder, liver disease, orthopedic/major spine/craniotomy/vascular/thoracic surgery, or Coumadin
+    const surgeryTriggersPTINR = ['orthopedic', 'major_spine', 'craniotomy', 'vascular', 'thoracic'];
+    if (conditions.includes('bleeding_disorder') || conditions.includes('liver_disease') || surgeryTriggersPTINR.includes(surgery) || isOnCoumadin) {
         labTests.push('PT/PTT/INR');
     }
     
-    if (surgery === 'orthopedic' || surgery === 'vascular' || surgery === 'thoracic') {
+    // Type and Screen triggers: orthopedic/vascular/thoracic surgery OR anemia with Hct <28
+    const hctLow = document.querySelector('input[name="hctLow"]:checked');
+    const hasLowHct = hctLow && hctLow.value === 'yes';
+    const hasAnemia = conditions.includes('anemia');
+    
+    if (surgery === 'orthopedic' || surgery === 'vascular' || surgery === 'thoracic' || (hasAnemia && hasLowHct)) {
         labTests.push('Type and Screen');
     }
     
-    if (surgery === 'orthopedic' || surgery === 'neurological') {
+    // UA (Urinalysis) triggered by orthopedic surgery or major spine surgery (not craniotomy)
+    if (surgery === 'orthopedic' || surgery === 'major_spine') {
         labTests.push('UA (Urinalysis)');
     }
     
@@ -76,12 +140,6 @@ function generateRecommendations() {
     // Diagnostic Studies
     const diagnosticTests = [];
     
-    // Check for stimulant use within 5 years - triggers BMP and EKG
-    const substanceAbuse = document.querySelector('input[name="substanceAbuse"]:checked');
-    const stimulantUseWithin5Years = document.querySelector('input[name="stimulantUseWithin5Years"]:checked');
-    const hasStimulantUseWithin5Years = substanceAbuse && substanceAbuse.value === 'yes' && 
-                                        stimulantUseWithin5Years && stimulantUseWithin5Years.value === 'yes';
-    
     // ECG logic:
     // - Advanced Cardiac Disease (heart_disease): always triggers ECG
     // - Neurological Disease: always triggers ECG
@@ -94,7 +152,7 @@ function generateRecommendations() {
     // - Stimulant Use within 5 years: always triggers ECG
     // - General age >= 50: always triggers ECG
     // - General Cardiac Disease (hypertension): triggers ECG if age > 48 (age >= 49)
-    // - Surgery types: neurological, abdominal, orthopedic, vascular, thoracic
+    // - Surgery types: major spine, craniotomy, abdominal, orthopedic, vascular, thoracic
     const hasHypertension = conditions.includes('hypertension');
     const hasHeartDisease = conditions.includes('heart_disease');
     const hasNeurologicalDisease = conditions.includes('neurological_disease');
@@ -104,7 +162,7 @@ function generateRecommendations() {
     const hasObesity = conditions.includes('obesity');
     const hasDiabetes = conditions.includes('diabetes');
     const hasKidneyDisease = conditions.includes('kidney_disease');
-    const surgeryTriggersECG = ['neurological', 'abdominal', 'orthopedic', 'vascular', 'thoracic'];
+    const surgeryTriggersECG = ['major_spine', 'craniotomy', 'abdominal', 'orthopedic', 'vascular', 'thoracic'];
     
     // Peritoneal Dialysis Catheter: EKG
     if (surgery === 'peritoneal_dialysis') {
@@ -732,13 +790,15 @@ function createFormattedContent() {
     recs.forEach((category, index) => {
         const isLastCategory = index === recs.length - 1;
         const isRequiredActions = category.title === 'Required Actions';
+        const isFunctionalStatus = category.title === 'Functional Status';
         const borderColor = isRequiredActions ? '#ea580c' : '#008045';
         const bgColor = isRequiredActions ? '#fff7ed' : '#e2e8f0';
         const titleColor = isRequiredActions ? '#9a3412' : '#0e2657';
+        // Use page-break-inside: avoid for entire category to prevent splitting
         recommendationsHTML += `
-            <div style="margin-bottom: ${isLastCategory ? '10px' : '12px'}; page-break-inside: avoid; orphans: 3; widows: 3; width: 100%;" class="page-break-avoid">
-                <h4 style="color: ${titleColor}; margin: 0 0 8px 0; font-size: 16px; font-weight: bold; background-color: ${bgColor}; padding: 10px 15px; border-left: 4px solid ${borderColor}; page-break-after: avoid;">${category.title}</h4>
-                <ul style="margin: 0; padding: 0; list-style: none; width: 100%; page-break-inside: avoid;">
+            <div style="margin-bottom: ${isLastCategory ? '10px' : '12px'}; page-break-inside: avoid; orphans: 3; widows: 3; width: 100%; break-inside: avoid;" class="page-break-avoid">
+                <h4 style="color: ${titleColor}; margin: 0 0 8px 0; font-size: 16px; font-weight: bold; background-color: ${bgColor}; padding: 10px 15px; border-left: 4px solid ${borderColor}; page-break-after: avoid; break-after: avoid;">${category.title}</h4>
+                <ul style="margin: 0; padding: 0; list-style: none; width: 100%; page-break-inside: avoid; break-inside: avoid;">
         `;
         category.items.forEach((item, itemIndex) => {
             const isLastItem = itemIndex === category.items.length - 1;
@@ -747,7 +807,7 @@ function createFormattedContent() {
             const textColor = isRequiredActions ? '#9a3412' : '#1e293b';
             const fontWeight = isRequiredActions ? 'bold' : 'normal';
             recommendationsHTML += `
-                    <li style="padding: 5px 15px 5px 35px; color: ${textColor}; font-size: 13px; position: relative; width: 100%; box-sizing: border-box; line-height: 1.4; font-weight: ${fontWeight}; ${isLastItem ? 'margin-bottom: 0;' : ''}">
+                    <li style="padding: 5px 15px 5px 35px; color: ${textColor}; font-size: 13px; position: relative; width: 100%; box-sizing: border-box; line-height: 1.4; font-weight: ${fontWeight}; page-break-inside: avoid; break-inside: avoid; ${isLastItem ? 'margin-bottom: 0;' : ''}">
                         <span style="position: absolute; left: 12px; color: ${iconColor}; font-weight: bold; font-size: 14px;">${iconSymbol}</span>
                         ${item}
                     </li>
@@ -879,10 +939,6 @@ function downloadPDF() {
     printContent.style.fontFamily = 'Arial, sans-serif';
     printContent.style.color = '#1e293b';
     
-    // Force layout calculation
-    const height = printContent.scrollHeight;
-    const width = printContent.scrollWidth;
-    
     // Verify content exists
     if (!printContent.innerHTML || printContent.innerHTML.trim().length === 0) {
         alert('Error: Content is empty. Please try again.');
@@ -893,27 +949,47 @@ function downloadPDF() {
         return;
     }
     
-    // Wait for content to be fully rendered
+    // Wait for content to be fully rendered and recalculate dimensions
     setTimeout(() => {
+        // Recalculate dimensions after rendering
+        const height = printContent.scrollHeight;
+        const width = printContent.scrollWidth;
+        
+        // Ensure content is fully visible
+        printContent.style.height = 'auto';
+        printContent.style.minHeight = height + 'px';
+        printContent.style.overflow = 'visible';
+        
+        console.log('Content dimensions:', { width, height, scrollHeight: printContent.scrollHeight, clientHeight: printContent.clientHeight });
+        
         try {
             const options = {
                 margin: [8, 8, 8, 8],
                 filename: `PreoperativeOrders_${new Date().toISOString().split('T')[0]}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { 
-                    scale: 1.5,
+                    scale: 2,
                     useCORS: true,
                     logging: false,
                     allowTaint: false,
                     backgroundColor: '#ffffff',
                     width: width,
-                    height: height + 50, // Add extra height to prevent cutoff
+                    height: height,
                     windowWidth: width,
-                    windowHeight: height + 50,
+                    windowHeight: height,
                     x: 0,
                     y: 0,
                     scrollX: 0,
-                    scrollY: 0
+                    scrollY: 0,
+                    onclone: function(clonedDoc) {
+                        // Ensure cloned document has full height
+                        const clonedElement = clonedDoc.getElementById('printContent');
+                        if (clonedElement) {
+                            clonedElement.style.height = 'auto';
+                            clonedElement.style.minHeight = height + 'px';
+                            clonedElement.style.overflow = 'visible';
+                        }
+                    }
                 },
                 jsPDF: { 
                     unit: 'mm', 
@@ -921,14 +997,14 @@ function downloadPDF() {
                     orientation: 'portrait',
                     compress: true
                 },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'], avoid: ['.page-break-avoid'] }
+                pagebreak: { mode: ['css', 'legacy'], avoid: ['.page-break-avoid'], before: '.page-break-before', after: '.page-break-after' }
             };
             
             console.log('Generating PDF from element:', printContent);
-            console.log('Element dimensions:', { width, height, scrollHeight: printContent.scrollHeight });
+            console.log('Element dimensions:', { width, height, scrollHeight: printContent.scrollHeight, clientHeight: printContent.clientHeight });
             console.log('Element innerHTML length:', printContent.innerHTML.length);
             
-            // Generate PDF
+            // Generate PDF - use save() which handles multi-page automatically
             html2pdf().set(options).from(printContent).save().then(() => {
                 console.log('PDF generated successfully');
                 // Restore original styles
@@ -952,7 +1028,7 @@ function downloadPDF() {
             });
             alert('Error: ' + error.message);
         }
-    }, 500); // Increased delay to ensure rendering
+    }, 1000); // Increased delay to ensure all content is fully rendered
 }
 
 // Print function
