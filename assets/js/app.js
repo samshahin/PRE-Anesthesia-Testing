@@ -3,7 +3,6 @@ function generateRecommendations() {
     const age = parseInt(document.getElementById('age').value) || 0;
     const gender = document.getElementById('gender').value;
     const surgery = document.getElementById('surgeryType').value;
-    const anesthesia = document.getElementById('anesthesiaType').value;
     
     // Get checked conditions
     const conditions = Array.from(document.querySelectorAll('input[name="conditions"]:checked'))
@@ -30,8 +29,11 @@ function generateRecommendations() {
     const stimulantUseWithin5Years = document.querySelector('input[name="stimulantUseWithin5Years"]:checked');
     const hasStimulantUseWithin5Years = substanceAbuse && substanceAbuse.value === 'yes' && 
                                         stimulantUseWithin5Years && stimulantUseWithin5Years.value === 'yes';
-    
-    // For age >= 50, neurological disease, anticoagulants, bleeding disorder, general cardiac disease (hypertension), advanced cardiac disease (heart_disease), pulmonary disease, sleep apnea, vascular disease, obesity, diabetes, kidney disease, liver disease, anemia, chemotherapy, or specific surgery types (craniotomy, abdominal, orthopedic, major spine, thoracic, peritoneal dialysis catheter), use CBC without differential; otherwise use standard CBC
+
+    // BMI-based trigger (BMI > 30)
+    const bmiCalcResult = calculateBMI();
+    const bmiOver30 = bmiCalcResult.value !== null && bmiCalcResult.value > 30;
+
     const surgeryTriggersCBCNoDiff = ['craniotomy', 'abdominal', 'orthopedic', 'major_spine', 'thoracic', 'peritoneal_dialysis'];
     if (age >= 50 || 
         conditions.includes('neurological_disease') || 
@@ -42,16 +44,14 @@ function generateRecommendations() {
         conditions.includes('copd') || 
         conditions.includes('sleep_apnea') || 
         conditions.includes('vascular_disease') || 
-        conditions.includes('obesity') || 
-        conditions.includes('diabetes') || 
+        bmiOver30 ||
+        conditions.includes('diabetes') ||
         conditions.includes('kidney_disease') || 
         conditions.includes('liver_disease') || 
         conditions.includes('anemia') || 
         surgeryTriggersCBCNoDiff.includes(surgery) || 
         isOnChemotherapy) {
-        labTests.push('Complete Blood Count (CBC) without differential');
-    } else {
-        labTests.push('Complete Blood Count (CBC)');
+        labTests.push('CBC without differential');
     }
     
     // Check if CMP will be triggered (to avoid adding BMP if CMP is present)
@@ -62,7 +62,7 @@ function generateRecommendations() {
     const surgeryTriggersCMP = ['major_spine', 'craniotomy', 'abdominal', 'vascular', 'thoracic'];
     const willTriggerCMP = conditions.includes('heart_disease') || hasPacemakerOrAICD || surgeryTriggersCMP.includes(surgery);
     
-    // BMP triggers: General cardiac disease, cocaine/meth use, current chemotherapy, diabetes, liver disease, neurological disease, obesity, kidney disease, steroid use, vascular disease, orthopedic surgery, or Diuretics/Digoxin/ACEi/ARB medications
+    // BMP triggers: General cardiac disease, cocaine/meth use, current chemotherapy, liver disease, neurological disease, BMI >30, kidney disease, steroid use, vascular disease, orthopedic surgery, or Diuretics/Digoxin/ACEi/ARB medications
     // Note: Do not add BMP if CMP is already triggered (CMP includes all BMP tests plus additional ones)
     const diureticsDigoxinAceiArb = document.querySelector('input[name="diureticsDigoxinAceiArb"]:checked');
     const takesDiureticsDigoxinAceiArb = diureticsDigoxinAceiArb && diureticsDigoxinAceiArb.value === 'yes';
@@ -79,7 +79,7 @@ function generateRecommendations() {
                conditions.includes('diabetes') ||
                conditions.includes('liver_disease') ||
                conditions.includes('neurological_disease') ||
-               conditions.includes('obesity') ||
+               bmiOver30 ||
                takesSteroidMedications ||
                conditions.includes('vascular_disease') ||
                surgery === 'orthopedic' ||
@@ -131,9 +131,6 @@ function generateRecommendations() {
         labTests.push('BMP (DOS)');
     }
     
-    if (gender === 'female') {
-        labTests.push('Pregnancy Test');
-    }
     
     recs.push({ title: 'Laboratory Studies', items: labTests });
     
@@ -159,7 +156,6 @@ function generateRecommendations() {
     const hasPulmonaryDisease = conditions.includes('copd');
     const hasSleepApnea = conditions.includes('sleep_apnea');
     const hasVascularDisease = conditions.includes('vascular_disease');
-    const hasObesity = conditions.includes('obesity');
     const hasDiabetes = conditions.includes('diabetes');
     const hasKidneyDisease = conditions.includes('kidney_disease');
     const surgeryTriggersECG = ['major_spine', 'craniotomy', 'abdominal', 'orthopedic', 'vascular', 'thoracic'];
@@ -172,8 +168,8 @@ function generateRecommendations() {
         hasPulmonaryDisease ||
         hasSleepApnea ||
         hasVascularDisease ||
-        hasObesity ||
         hasDiabetes ||
+        bmiOver30 ||
         hasKidneyDisease ||
         hasStimulantUseWithin5Years ||
         age >= 50 || 
@@ -246,6 +242,14 @@ function generateRecommendations() {
     const metsResult = calculateMETs();
     const functionalStatus = [];
     
+    // BMI
+    const bmiResult = calculateBMI();
+    if (bmiResult.value !== null) {
+        functionalStatus.push(`BMI: ${bmiResult.display}`);
+    } else {
+        functionalStatus.push('BMI: N/A (weight and/or height not provided)');
+    }
+
     // Check if METs is unavailable (not sure or no selection)
     const selectedOptions = Array.from(document.querySelectorAll('input[name="functionalCapacity"]:checked'))
         .map(cb => cb.value);
@@ -262,50 +266,33 @@ function generateRecommendations() {
     
     recs.push({ title: 'Functional Status', items: functionalStatus });
 
-    // Required Actions / Warnings for Cardiac Devices
+    // Required Actions and Alerts
     const requiredActions = [];
-    
-    // Check for weight loss medications
-    const weightLossMeds = Array.from(document.querySelectorAll('input[name="weightLossMed"]:checked'))
-        .map(cb => cb.value);
-    
-    if (weightLossMeds.includes('glp1')) {
-        requiredActions.push('Stop taking the GLP-1 medication(s) 7 days before surgery.');
-    }
-    
-    if (weightLossMeds.includes('sglt2')) {
-        requiredActions.push('Stop taking the SGLT2 medication(s) 3 days before surgery.');
-    }
-    
-    // Check for stimulant use within 5 years
-    if (hasStimulantUseWithin5Years) {
-        requiredActions.push('Must abstain from stimulant substance use for at least 5 days prior to surgery.');
-    }
-    
-    // Check for implantable cardiac device
+
+    // Standard alerts — always shown
+    requiredActions.push('Stop taking the GLP-1 medication(s) 7 days before surgery.');
+    requiredActions.push('Stop taking the SGLT2 medication(s) 3 days before surgery.');
+    requiredActions.push('Must abstain from stimulant substance use for at least 5 days prior to surgery.');
+
+    // Check for implantable cardiac device (conditional)
     const cardiacDevice = document.querySelector('input[name="cardiacDevice"]:checked');
     if (cardiacDevice && cardiacDevice.value === 'yes') {
         const lastInterrogation = document.getElementById('lastInterrogation');
         const lastInterrogationValue = lastInterrogation ? lastInterrogation.value : '';
         
-        // Flag if interrogation is over 6 months ago, unknown, or not selected
         if (lastInterrogationValue === 'over_6_months' || 
             lastInterrogationValue === 'not_sure' || 
             lastInterrogationValue === '') {
             requiredActions.push('Device interrogation must be scheduled');
         }
         
-        // Check cardiologist visit
         const cardiologistVisit = document.querySelector('input[name="cardiologistVisit"]:checked');
         if (cardiologistVisit && cardiologistVisit.value === 'no') {
             requiredActions.push('Cardiology consult required');
         }
     }
     
-    // Only add Required Actions category if there are actions to display
-    if (requiredActions.length > 0) {
-        recs.push({ title: 'Required Actions', items: requiredActions });
-    }
+    recs.push({ title: 'Required Actions and Alerts', items: requiredActions });
     
     // Store recommendations globally for PDF/print use
     window.currentRecommendations = recs;
@@ -313,7 +300,7 @@ function generateRecommendations() {
     // Generate HTML with new styling
     let html = '';
     recs.forEach((category) => {
-        const isRequiredActions = category.title === 'Required Actions';
+        const isRequiredActions = category.title === 'Required Actions and Alerts';
         html += `
             <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden ${isRequiredActions ? 'border-orange-300' : ''}">
                 <div class="bg-slate-100 px-4 py-3 border-b border-slate-200 ${isRequiredActions ? 'bg-orange-50 border-orange-200' : ''}">
@@ -583,6 +570,39 @@ function testMETsCalculations() {
     return { passed, failed, total: testCases.length };
 }
 
+// Calculate BMI using imperial formula: [weight (lbs) / height (in)^2] x 703
+function calculateBMI() {
+    const weight = parseFloat(document.getElementById('weight').value);
+    const heightInput = document.getElementById('height').value;
+    const heightInInches = parseHeightToInches(heightInput);
+
+    if (isNaN(weight) || weight <= 0 || heightInInches === 'N/A' || isNaN(heightInInches) || heightInInches <= 0) {
+        return { value: null, category: null, display: 'N/A' };
+    }
+
+    const bmi = (weight / (heightInInches * heightInInches)) * 703;
+    const bmiRounded = Math.round(bmi * 10) / 10;
+
+    let category;
+    if (bmiRounded < 18.5) {
+        category = 'Underweight';
+    } else if (bmiRounded < 25) {
+        category = 'Normal weight';
+    } else if (bmiRounded < 30) {
+        category = 'Overweight';
+    } else if (bmiRounded < 40) {
+        category = 'Obese';
+    } else {
+        category = 'Morbidly Obese';
+    }
+
+    return {
+        value: bmiRounded,
+        category: category,
+        display: `${bmiRounded} (${category})`
+    };
+}
+
 // Helper function to validate height input format
 function validateHeightInput(heightInput) {
     if (!heightInput || heightInput.trim() === '') {
@@ -699,7 +719,6 @@ function getPatientInfo() {
     const weight = document.getElementById('weight').value || 'N/A';
     const height = document.getElementById('height').value || 'N/A';
     const surgeryType = document.getElementById('surgeryType').value || 'N/A';
-    const anesthesiaType = document.getElementById('anesthesiaType').value || 'N/A';
     const surgeryDate = document.getElementById('surgeryDate').value || 'N/A';
     
     // Format gender display
@@ -709,9 +728,6 @@ function getPatientInfo() {
     const surgeryTypeDisplay = surgeryType !== 'N/A' ? 
         surgeryType.charAt(0).toUpperCase() + surgeryType.slice(1).replace('_', ' ') + ' Surgery' : 'N/A';
     
-    // Format anesthesia type display
-    const anesthesiaTypeDisplay = anesthesiaType !== 'N/A' ? 
-        anesthesiaType.charAt(0).toUpperCase() + anesthesiaType.slice(1) + ' Anesthesia' : 'N/A';
     
     // Format weight (lbs) and height (feet/inches)
     const weightDisplay = weight !== 'N/A' ? weight + ' lbs' : 'N/A';
@@ -719,6 +735,10 @@ function getPatientInfo() {
     // Parse height input (feet'inches) to total inches, then format for display
     const heightInInches = parseHeightToInches(height);
     const heightDisplay = heightInInches !== 'N/A' ? formatHeightInches(heightInInches) : 'N/A';
+
+    // Calculate BMI
+    const bmiResult = calculateBMI();
+    const bmiDisplay = bmiResult.value !== null ? bmiResult.display : 'N/A';
     
     // Get cardiac device information
     const cardiacDevice = document.querySelector('input[name="cardiacDevice"]:checked');
@@ -761,8 +781,9 @@ function getPatientInfo() {
         gender: genderDisplay,
         weight: weightDisplay,
         height: heightDisplay,
+        bmi: bmiDisplay,
         surgeryType: surgeryTypeDisplay,
-        anesthesiaType: anesthesiaTypeDisplay,
+
         surgeryDate: surgeryDate !== 'N/A' ? new Date(surgeryDate).toLocaleDateString('en-US', { 
             year: 'numeric', 
             month: 'long', 
@@ -789,7 +810,7 @@ function createFormattedContent() {
     let recommendationsHTML = '';
     recs.forEach((category, index) => {
         const isLastCategory = index === recs.length - 1;
-        const isRequiredActions = category.title === 'Required Actions';
+        const isRequiredActions = category.title === 'Required Actions and Alerts';
         const isFunctionalStatus = category.title === 'Functional Status';
         const borderColor = isRequiredActions ? '#ea580c' : '#008045';
         const bgColor = isRequiredActions ? '#fff7ed' : '#e2e8f0';
@@ -848,13 +869,14 @@ function createFormattedContent() {
                         <td style="padding: 6px 0; color: #1e293b; text-align: left; font-size: 13px;">${patientInfo.height}</td>
                     </tr>
                     <tr>
+                        <td style="padding: 6px 15px 6px 0; color: #475569; font-weight: 600; text-align: right; font-size: 13px;">BMI:</td>
+                        <td style="padding: 6px 0; color: #1e293b; text-align: left; font-size: 13px;">${patientInfo.bmi}</td>
+                    </tr>
+                    <tr>
                         <td style="padding: 6px 15px 6px 0; color: #475569; font-weight: 600; text-align: right; font-size: 13px;">Surgery Type:</td>
                         <td style="padding: 6px 0; color: #1e293b; text-align: left; font-size: 13px;">${patientInfo.surgeryType}</td>
                     </tr>
-                    <tr>
-                        <td style="padding: 6px 15px 6px 0; color: #475569; font-weight: 600; text-align: right; font-size: 13px;">Anesthesia:</td>
-                        <td style="padding: 6px 0; color: #1e293b; text-align: left; font-size: 13px;">${patientInfo.anesthesiaType}</td>
-                    </tr>
+
                     <tr>
                         <td style="padding: 6px 15px 6px 0; color: #475569; font-weight: 600; text-align: right; font-size: 13px;">Scheduled Date:</td>
                         <td style="padding: 6px 0; color: #1e293b; text-align: left; font-size: 13px;">${patientInfo.surgeryDate}</td>
