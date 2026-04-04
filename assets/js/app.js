@@ -16,9 +16,6 @@ function generateRecommendations() {
     // Check for anticoagulants
     const anticoagulant = document.querySelector('input[name="anticoagulant"]:checked');
     const isOnAnticoagulant = anticoagulant && anticoagulant.value === 'yes';
-    const anticoagulantTypes = Array.from(document.querySelectorAll('input[name="anticoagulantType"]:checked'))
-        .map(cb => cb.value);
-    const isOnCoumadin = anticoagulantTypes.includes('coumadin');
     
     // Check for chemotherapy
     const chemotherapy = document.querySelector('input[name="chemotherapy"]:checked');
@@ -32,9 +29,9 @@ function generateRecommendations() {
 
     // BMI-based trigger (BMI > 30)
     const bmiCalcResult = calculateBMI();
-    const bmiOver30 = bmiCalcResult.value !== null && bmiCalcResult.value > 30;
+    const bmiOver35 = bmiCalcResult.value !== null && bmiCalcResult.value >= 35;
 
-    const surgeryTriggersCBCNoDiff = ['craniotomy', 'abdominal', 'orthopedic', 'major_spine', 'thoracic', 'peritoneal_dialysis'];
+    const surgeryTriggersCBCNoDiff = ['craniotomy', 'abdominal', 'orthopedic', 'major_spine', 'thoracic', 'vascular', 'peritoneal_dialysis'];
     if (age >= 50 || 
         conditions.includes('neurological_disease') || 
         isOnAnticoagulant || 
@@ -44,7 +41,7 @@ function generateRecommendations() {
         conditions.includes('copd') || 
         conditions.includes('sleep_apnea') || 
         conditions.includes('vascular_disease') || 
-        bmiOver30 ||
+        bmiOver35 ||
         conditions.includes('diabetes') ||
         conditions.includes('kidney_disease') || 
         conditions.includes('liver_disease') || 
@@ -70,16 +67,16 @@ function generateRecommendations() {
     const steroidMedications = document.querySelector('input[name="steroidMedications"]:checked');
     const takesSteroidMedications = steroidMedications && steroidMedications.value === 'yes';
     
-    // Peritoneal Dialysis Catheter gets special BMP, not regular BMP
+    // Peritoneal Dialysis Catheter gets special handling, not regular BMP
     if (surgery === 'peritoneal_dialysis') {
-        // Special BMP handled below
+        // No standard BMP for peritoneal dialysis
     } else if (!willTriggerCMP && (conditions.includes('hypertension') || 
                hasStimulantUseWithin5Years ||
                isOnChemotherapy ||
                conditions.includes('diabetes') ||
                conditions.includes('liver_disease') ||
                conditions.includes('neurological_disease') ||
-               bmiOver30 ||
+               bmiOver35 ||
                takesSteroidMedications ||
                conditions.includes('vascular_disease') ||
                surgery === 'orthopedic' ||
@@ -97,14 +94,14 @@ function generateRecommendations() {
         labTests.push('Comprehensive Metabolic Panel (CMP)');
     }
     
-    // Peritoneal Dialysis Catheter: special BMP with DOS and lab values (replaces standard BMP)
+    // Peritoneal Dialysis Catheter: special BMP with DOS and lab values
     if (surgery === 'peritoneal_dialysis') {
         labTests.push('BMP (DOS, K+<5.6, HCO3>11)');
     }
-    
+
     // PT/PTT/INR for bleeding disorder, liver disease, orthopedic/major spine/craniotomy/vascular/thoracic surgery, or Coumadin
     const surgeryTriggersPTINR = ['orthopedic', 'major_spine', 'craniotomy', 'vascular', 'thoracic'];
-    if (conditions.includes('bleeding_disorder') || conditions.includes('liver_disease') || surgeryTriggersPTINR.includes(surgery) || isOnCoumadin) {
+    if (conditions.includes('bleeding_disorder') || conditions.includes('liver_disease') || surgeryTriggersPTINR.includes(surgery)) {
         labTests.push('PT/PTT/INR');
     }
     
@@ -160,16 +157,16 @@ function generateRecommendations() {
     const hasKidneyDisease = conditions.includes('kidney_disease');
     const surgeryTriggersECG = ['major_spine', 'craniotomy', 'abdominal', 'orthopedic', 'vascular', 'thoracic'];
     
-    // Peritoneal Dialysis Catheter: EKG
+    // Peritoneal Dialysis Catheter: ECG
     if (surgery === 'peritoneal_dialysis') {
         diagnosticTests.push('ECG (Electrocardiogram)');
-    } else if (hasHeartDisease || 
-        hasNeurologicalDisease || 
+    } else if (hasHeartDisease ||
+        hasNeurologicalDisease ||
         hasPulmonaryDisease ||
         hasSleepApnea ||
         hasVascularDisease ||
         hasDiabetes ||
-        bmiOver30 ||
+        bmiOver35 ||
         hasKidneyDisease ||
         hasStimulantUseWithin5Years ||
         age >= 50 || 
@@ -178,7 +175,7 @@ function generateRecommendations() {
         diagnosticTests.push('ECG (Electrocardiogram)');
     }
     
-    if (conditions.includes('heart_disease') || surgery === 'cardiac') {
+    if (conditions.includes('heart_disease')) {
         diagnosticTests.push('Echocardiogram');
     }
     
@@ -197,7 +194,7 @@ function generateRecommendations() {
     
     if (surgery === 'peritoneal_dialysis') {
         imagingTests.push('Chest X-ray (DOS if sat<95% or O2 requirement)');
-    } else if (heartDiseaseWithSobDoe || copdWithSobDoe || surgery === 'thoracic' || surgery === 'cardiac') {
+    } else if (heartDiseaseWithSobDoe || copdWithSobDoe || surgery === 'thoracic') {
         imagingTests.push('Chest X-ray');
     }
     
@@ -263,36 +260,83 @@ function generateRecommendations() {
             functionalStatus.push(`METs Score: ${metsResult.mets}`);
         }
     }
-    
+
+    // Smoking Status
+    const smokingStatusEl = document.getElementById('smokingStatus');
+    const smokingValue = smokingStatusEl ? smokingStatusEl.value : '';
+    const smokingDisplayMap = {
+        'never': 'Never Smoked',
+        'former': 'Former Smoker',
+        'current': 'Current Smoker'
+    };
+    if (smokingValue && smokingDisplayMap[smokingValue]) {
+        functionalStatus.push(`Smoking Status: ${smokingDisplayMap[smokingValue]}`);
+    }
+
+    // Alcohol Use
+    const alcoholUseEl = document.getElementById('alcoholUse');
+    const alcoholValue = alcoholUseEl ? alcoholUseEl.value : '';
+    const alcoholDisplayMap = {
+        'none': 'None',
+        'social': 'Social Drinking',
+        'moderate': 'Moderate Use',
+        'heavy': 'Heavy Use'
+    };
+    if (alcoholValue && alcoholDisplayMap[alcoholValue]) {
+        functionalStatus.push(`Alcohol Use: ${alcoholDisplayMap[alcoholValue]}`);
+    }
+
     recs.push({ title: 'Functional Status', items: functionalStatus });
 
-    // Required Actions and Alerts
+    // Required Actions and Alerts — all conditional
     const requiredActions = [];
 
-    // Standard alerts — always shown
-    requiredActions.push('Stop taking the GLP-1 medication(s) 7 days before surgery.');
-    requiredActions.push('Stop taking the SGLT2 medication(s) 3 days before surgery.');
-    requiredActions.push('Must abstain from stimulant substance use for at least 5 days prior to surgery.');
 
-    // Check for implantable cardiac device (conditional)
+    // Anticoagulant alert: if yes to anticoagulants, flag PT/PTT/INR if Coumadin is in use
+    if (isOnAnticoagulant) {
+        requiredActions.push('PT/PTT/INR if Coumadin (Warfarin) is in use.');
+    }
+
+    // GLP-1: only if selected as weight loss medication
+    const weightLossMeds = Array.from(document.querySelectorAll('input[name="weightLossMed"]:checked'))
+        .map(cb => cb.value);
+
+    if (weightLossMeds.includes('glp1')) {
+        requiredActions.push('Stop taking the GLP-1 medication(s) 7 days before surgery.');
+    }
+
+    // SGLT2: only if selected as weight loss medication
+    if (weightLossMeds.includes('sglt2')) {
+        requiredActions.push('Stop taking the SGLT2 medication(s) 3 days before surgery.');
+    }
+
+    // Stimulant abstinence: only if substance abuse = yes AND stimulant use within 5 years = yes
+    if (hasStimulantUseWithin5Years) {
+        requiredActions.push('Must abstain from stimulant substance use for at least 5 days prior to surgery.');
+    }
+
+    // Cardiac device alerts: only if cardiac device = yes
     const cardiacDevice = document.querySelector('input[name="cardiacDevice"]:checked');
     if (cardiacDevice && cardiacDevice.value === 'yes') {
         const lastInterrogation = document.getElementById('lastInterrogation');
         const lastInterrogationValue = lastInterrogation ? lastInterrogation.value : '';
-        
+
         if (lastInterrogationValue === 'over_6_months' || 
             lastInterrogationValue === 'not_sure' || 
             lastInterrogationValue === '') {
             requiredActions.push('Device interrogation must be scheduled');
         }
-        
+
         const cardiologistVisit = document.querySelector('input[name="cardiologistVisit"]:checked');
         if (cardiologistVisit && cardiologistVisit.value === 'no') {
             requiredActions.push('Cardiology consult required');
         }
     }
-    
-    recs.push({ title: 'Required Actions and Alerts', items: requiredActions });
+
+    // Only add section if at least one action is triggered
+    if (requiredActions.length > 0) {
+        recs.push({ title: 'Required Actions and Alerts', items: requiredActions });
+    }
     
     // Store recommendations globally for PDF/print use
     window.currentRecommendations = recs;
@@ -823,14 +867,14 @@ function createFormattedContent() {
         `;
         category.items.forEach((item, itemIndex) => {
             const isLastItem = itemIndex === category.items.length - 1;
-            const iconSymbol = isRequiredActions ? '⚠' : '✓';
+            const iconSymbol = isRequiredActions ? '!' : '✓';
             const iconColor = isRequiredActions ? '#ea580c' : '#6ba818';
             const textColor = isRequiredActions ? '#9a3412' : '#1e293b';
             const fontWeight = isRequiredActions ? 'bold' : 'normal';
             recommendationsHTML += `
-                    <li style="padding: 5px 15px 5px 35px; color: ${textColor}; font-size: 13px; position: relative; width: 100%; box-sizing: border-box; line-height: 1.4; font-weight: ${fontWeight}; page-break-inside: avoid; break-inside: avoid; ${isLastItem ? 'margin-bottom: 0;' : ''}">
-                        <span style="position: absolute; left: 12px; color: ${iconColor}; font-weight: bold; font-size: 14px;">${iconSymbol}</span>
-                        ${item}
+                    <li style="padding: 5px 15px; color: ${textColor}; font-size: 13px; width: 100%; box-sizing: border-box; line-height: 1.5; font-weight: ${fontWeight}; page-break-inside: avoid; break-inside: avoid; display: flex; align-items: flex-start; gap: 8px; ${isLastItem ? 'margin-bottom: 0;' : ''}">
+                        <span style="color: ${iconColor}; font-weight: bold; font-size: 14px; flex-shrink: 0; min-width: 14px;">${iconSymbol}</span>
+                        <span>${item}</span>
                     </li>
             `;
         });
