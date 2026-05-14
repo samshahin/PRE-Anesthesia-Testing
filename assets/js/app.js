@@ -614,18 +614,30 @@ function testMETsCalculations() {
     return { passed, failed, total: testCases.length };
 }
 
-// Calculate BMI using imperial formula: [weight (lbs) / height (in)^2] x 703
+// Calculate BMI — supports both imperial ([lbs / in²] × 703) and metric (kg / m²)
 function calculateBMI() {
     const weight = parseFloat(document.getElementById('weight').value);
     const heightInput = document.getElementById('height').value;
-    const heightInInches = parseHeightToInches(heightInput);
+    const unitSystemEl = document.getElementById('unitSystem');
+    const isMetric = unitSystemEl && unitSystemEl.value === 'metric';
 
-    if (isNaN(weight) || weight <= 0 || heightInInches === 'N/A' || isNaN(heightInInches) || heightInInches <= 0) {
-        return { value: null, category: null, display: 'N/A' };
+    let bmiRaw;
+    if (isMetric) {
+        const heightCm = parseFloat(heightInput);
+        if (isNaN(weight) || weight <= 0 || isNaN(heightCm) || heightCm <= 0) {
+            return { value: null, category: null, display: 'N/A' };
+        }
+        const heightM = heightCm / 100;
+        bmiRaw = weight / (heightM * heightM);
+    } else {
+        const heightInInches = parseHeightToInches(heightInput);
+        if (isNaN(weight) || weight <= 0 || heightInInches === 'N/A' || isNaN(heightInInches) || heightInInches <= 0) {
+            return { value: null, category: null, display: 'N/A' };
+        }
+        bmiRaw = (weight / (heightInInches * heightInInches)) * 703;
     }
 
-    const bmi = (weight / (heightInInches * heightInInches)) * 703;
-    const bmiRounded = Math.round(bmi * 10) / 10;
+    const bmiRounded = Math.round(bmiRaw * 10) / 10;
 
     let category;
     if (bmiRounded < 18.5) {
@@ -654,6 +666,19 @@ function validateHeightInput(heightInput) {
     }
     
     const input = heightInput.trim();
+
+    // Metric path: expect a plain number in cm (50–250)
+    const unitSystemEl = document.getElementById('unitSystem');
+    if (unitSystemEl && unitSystemEl.value === 'metric') {
+        const cm = parseFloat(input);
+        if (isNaN(cm) || cm <= 0) {
+            return { valid: false, error: 'Please enter a valid height in cm (e.g. 175)' };
+        }
+        if (cm < 50 || cm > 250) {
+            return { valid: false, error: 'Height must be between 50 and 250 cm' };
+        }
+        return { valid: true, error: '' };
+    }
     
     // Check if input contains an apostrophe (feet'inches format)
     if (input.includes("'") || input.includes("'")) {
@@ -773,12 +798,22 @@ function getPatientInfo() {
         surgeryType.charAt(0).toUpperCase() + surgeryType.slice(1).replace('_', ' ') + ' Surgery' : 'N/A';
     
     
-    // Format weight (lbs) and height (feet/inches)
-    const weightDisplay = weight !== 'N/A' ? weight + ' lbs' : 'N/A';
-    
-    // Parse height input (feet'inches) to total inches, then format for display
-    const heightInInches = parseHeightToInches(height);
-    const heightDisplay = heightInInches !== 'N/A' ? formatHeightInches(heightInInches) : 'N/A';
+    // Format weight and height according to the active unit system
+    const unitSystemEl = document.getElementById('unitSystem');
+    const isMetric = unitSystemEl && unitSystemEl.value === 'metric';
+
+    const weightDisplay = weight !== 'N/A' ? weight + (isMetric ? ' kg' : ' lbs') : 'N/A';
+
+    let heightDisplay;
+    if (height === 'N/A') {
+        heightDisplay = 'N/A';
+    } else if (isMetric) {
+        const cm = parseFloat(height);
+        heightDisplay = isNaN(cm) ? 'N/A' : cm + ' cm';
+    } else {
+        const heightInInches = parseHeightToInches(height);
+        heightDisplay = heightInInches !== 'N/A' ? formatHeightInches(heightInInches) : 'N/A';
+    }
 
     // Calculate BMI
     const bmiResult = calculateBMI();
